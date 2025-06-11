@@ -1,0 +1,11 @@
+CHIP Or {
+    IN a ,b;
+    OUT out;
+PARTS:
+    Nand(a = a , b = a , out = complea);
+    Nand(a = b , b = b , out = compleb);
+    Nand(a = complea , b = compleb , out = out );
+}
+    
+
+

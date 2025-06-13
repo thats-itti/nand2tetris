@@ -26,6 +26,7 @@
 // if (f == 0)  sets out = x & y  // bitwise and
 // if (no == 1) sets out = !out   // bitwise not
 
+
 CHIP ALU {
     IN  
         x[16], y[16],  // 16-bit inputs        
@@ -39,7 +40,31 @@ CHIP ALU {
         out[16], // 16-bit output
         zr,      // if (out == 0) equals 1, else 0
         ng;      // if (out < 0)  equals 1, else 0
+            
+    PARTS:  
+    Mux16( a = x , b = false ,sel = zx , out = x1 );
 
-    PARTS:
-    //// Replace this comment with your code.
+    Not16( in = x1 , out = complex1);
+    Mux16( a = x1 , b = complex1 , sel = nx , out = x2 );
+
+    Mux16( a = y , b = false , sel = zy , out = y1 );
+
+    Not16( in = y1 , out = compley1 );
+    Mux16( a = y1 , b = compley1 , sel = ny , out = y2);
+
+    Add16( a = x2 , b = y2 , out = addxy);
+    And16( a = x2 , b = y2 , out = andxy);
+
+    Mux16( a = andxy , b = addxy , sel = f , out = out1 );
+
+    Not16( in = out1 , out = compleout);
+
+    Mux16( a = out1 , b = compleout , sel = no , out = out2);
+
+    Or16Way( a = out2 , out = zr1);
+    Not( a = zr1 , out = zr );
+
+    IsNeg( a = out2 , out = ng );
+    Or16(a = out2 , b = false , out = out);
+
 }

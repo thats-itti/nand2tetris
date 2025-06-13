@@ -12,4 +12,12 @@ CHIP FullAdder {
 
     PARTS:
     //// Replace this comment with your code.
-}
+    
+    Xor(a = a , b = b , out = tempsumab);
+    And(a = a , b = b , out = carry1 );
+
+    Xor( a = tempsumab , b = c , out = sum);
+    And(a = tempsumab , b = c , out = carry2);
+
+    Or(a = carry1 , b = carry2 , out = carry);
+    }

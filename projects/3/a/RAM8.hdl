@@ -14,4 +14,62 @@ CHIP RAM8 {
 
     PARTS:
     //// Replace this comment with your code.
+    
+    Not( a = address[0] , out = comple0 );
+    Not( a = address[1] , out = comple1 );
+    Not( a = address[2] , out = comple2 );
+    
+    And( a = comple0 , b = comple1 , out = s11);
+    And( a = comple2 , b = s11 , out = ss1 );
+
+    And( a = comple2 , b = comple1 , out = s21 );
+    And( a = address[0] , b = s21 , out = ss2 );
+
+    And ( a = comple2 , b = address[1] , out = s31 );
+    And ( a = comple0 , b = s31 , out = ss3);
+
+    And( a = comple2 , b = address[1] , out = s41 );
+    And( a = address[0], b = s41 , out = ss4 );
+
+    And( a = address[2] , b = comple1 , out = s51);
+    And( a = comple0 , b = s51 ,out = ss5 );
+
+    And( a = address[2] , b = comple1 , out = s61);
+    And( a = address[0] , b = s61 , out = ss6);
+
+    And( a = address[2] , b = address[1] , out = s71);
+    And( a = comple0 , b = s71 , out = ss7);
+
+    And( a = address[2] , b = address[1] , out = s81);
+    And( a = address[0] , b = s81 , out = ss8);
+
+    
+    And ( a = ss1 , b = load , out = s1 );
+    And ( a = ss2 , b = load , out = s2 );
+    And ( a = ss3 , b = load , out = s3 );
+    And ( a = ss4 , b = load , out = s4 );
+    And ( a = ss5 , b = load , out = s5 );
+    And ( a = ss6 , b = load , out = s6 );
+    And ( a = ss7 , b = load , out = s7 );
+    And ( a = ss8 , b = load , out = s8 );
+
+
+    Register( in = in , load = s1 , out = o1);
+    Register( in = in , load = s2 , out = o2);
+    Register( in = in , load = s3 , out = o3);
+    Register( in = in , load = s4 , out = o4);
+    Register( in = in , load = s5 , out = o5);
+    Register( in = in , load = s6 , out = o6);
+    Register( in = in , load = s7 , out = o7);
+    Register( in = in , load = s8 , out = o8);
+
+    Mux8Way16( a = o1 ,
+                b = o2 ,
+                c = o3 , 
+                d = o4 ,
+                e = o5 , 
+                f = o6 ,
+                g = o7 ,
+                h = o8 ,
+                sel = address, out = out );    
 }

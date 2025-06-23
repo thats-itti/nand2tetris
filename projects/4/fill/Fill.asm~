@@ -10,46 +10,35 @@
 
 //// Replace this comment with your code.
 
-(start)
-
-@16384
-D = A
-
-@i
-M = D
-
 @24576
 D = M
-@keyin 
+
+@17
 M = D
 
-@keyin
-D = M
-@nocolor
-D;JEQ
+@16384  //0
+D = M  //
+
+@17
+M;JEQ //3
+    
+@D
+M=255
+A = A - 24575
+A;JEQ
+D = D +1
+@7
+0;JEQ
 
 
-(loopcolor)
 
-@-1
-D = A
-@i
-A = M
-M = D
-@1
-D = A
-@i
-M = M + D
-
-@24575
-D = A
-@i 
-D = D - M
-@start
-D;JEQ
-
-@loopcolor
-0;JMP
+@D
+M = 0
+D=D+1
+A = A - 24575
+A;JEQ
+@7
+0;JEQ
 
 
 
@@ -60,28 +49,15 @@ D;JEQ
 
 
 
-(nocolor)
 
 
-@0
-D = A
-@i
-A = M
-M = D
-@1
-D = A
-@i
-M = M + D
 
-@24575
-D = A
-@i 
-D = D - M
-@start
-D;JEQ
 
-@nocolor
-0;JMP
+
+
+
+
+
 
 
 

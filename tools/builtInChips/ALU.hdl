@@ -28,7 +28,7 @@
 
 CHIP ALU {
 
-    IN  // 16-bit inputs:
+    IN  // 16-bit input
         x[16], y[16],
         // Control bits:
         zx, // Zero the x input

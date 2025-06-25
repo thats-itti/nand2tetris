@@ -33,4 +33,108 @@ CHIP CPU {
 
     PARTS:
 	//// Replace this comment with your code.
-}
+
+    DMux8Way( in = true , 
+              a = a ,
+              b = b ,
+              c = c ,
+              d = d ,
+              e = e ,
+              f = f ,
+              g = g ,
+              h = h ,
+              sel = instruction[3..5]
+          );
+
+    Or( a = b , b =d , out = bd );
+    Or( a = f , b = h , out = fh );
+    Or( a = bd ,b = fh , out = write);
+    And(a = write , b = instruction[15] , out = writeM);
+
+    Not( in = instruction[15] , out = complemsb );
+    Or( a = e , b = f , out = ef );
+    Or( a = g , b = h , out = gh );
+    Or( a = ef , b = gh , out = al );
+    Or( a = al , b = complemsb , out = ain );
+
+    Or( a = c , b = d , out = cd );
+    Or( a = g  , b = h , out = gh1 );
+
+    Or( a = cd , b = gh1 , out = di );
+    And( a = di , b = instruction[15] , out = din);
+
+
+    Mux16( a = instruction , b = aluout , sel = instruction[15] , out = preareg );
+
+    ARegister( in = preareg , load = ain , out[0..14] = addressM , out = regaout );
+    Mux16( a = regaout , b = inM , sel = instruction[12] , out = firstaluin );
+
+    ALU( y = firstaluin ,
+         x = dregout ,
+         zx = instruction[11] ,
+         nx = instruction[10] ,
+         zy = instruction[9] ,
+         ny = instruction[8] ,
+         f = instruction[7] ,
+         no = instruction[6] ,
+         out = aluout ,
+         zr = zr ,
+         ng = ng ,
+         out = justtestout,
+         out = outM
+     );
+ 
+    DRegister( in = aluout , load = din   , out = dregout );
+
+   
+    DMux8Way( in = true ,
+              sel = instruction[0..2],
+              a = a1 ,
+              b = b1 ,
+              c = c1 ,
+              d = d1 ,
+              e = e1 ,
+              f = f1 ,
+              g = g1 ,
+              h = h1 
+          );
+
+    
+    Or( a = zr , b = ng , out =  o1);
+    Not( in = o1 , out = pos);
+    Not( in = zr , out = notzr );
+
+    And( a = pos , b = b1 , out = j1 );
+    And( a =  zr , b = c1 , out = j2 );
+    Or( a = pos , b = zr , out = j31 );
+    And( a = j31 , b = d1 , out = j3 );
+    And( a = ng , b = e1 , out = j4 );
+    And( a = notzr ,b = f1 , out = j5 );
+    Or( a = zr , b = ng , out = j61);
+    And( a = j61 , b = g1 , out = j6 );
+    And( a = true , b = h1 , out = j7 );
+
+    Or8Way( in[0] = false ,
+         in[1] = j1 ,
+         in[2] = j2 ,
+         in[3] = j3 ,
+         in[4] = j4 ,
+         in[5] = j5 ,
+         in[6] = j6 ,
+         in[7] = j7 ,
+         out =  jmp1
+     );
+
+    
+    And( a = jmp1 , b = instruction[15], out = jmp);
+    And( a = reset , b = jmp , out = inc1 );
+    Not( in = inc1 , out = inc );
+
+    
+    
+
+    PC( in = regaout  , load = jmp , inc = inc   , reset = reset, out[0..14] = pc ); 
+
+
+
+    }
